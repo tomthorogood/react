@@ -1,5 +1,5 @@
 import React, {useCallback, useState} from 'react'
-import {AnchoredOverlay} from '../AnchoredOverlay'
+import {AnchoredOverlay} from '.'
 import {behavesAsComponent, checkExports} from '../utils/testing'
 import {render as HTMLRender, fireEvent} from '@testing-library/react'
 import {axe, toHaveNoViolations} from 'jest-axe'
