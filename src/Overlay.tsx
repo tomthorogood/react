@@ -161,6 +161,7 @@ const Overlay = React.forwardRef<HTMLDivElement, OwnOverlayProps>(
       overlayRef,
       returnFocusRef,
       onEscape,
+      // find a way to get the dialop backdrop ref into this array
       ignoreClickRefs,
       onClickOutside,
       initialFocusRef,

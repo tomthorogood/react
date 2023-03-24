@@ -1,9 +1,57 @@
 import React, {useState, useRef, useCallback} from 'react'
 import {Meta} from '@storybook/react'
 
-import {BaseStyles, ThemeProvider, Box} from '..'
+import {BaseStyles, ThemeProvider, Box, Autocomplete, AutocompleteInputProps, SSRProvider, theme} from '..'
 import {Button} from '../Button'
 import {Dialog, DialogProps, DialogWidth, DialogHeight} from '../Dialog/Dialog'
+import {AutocompleteMenuInternalProps} from '../Autocomplete/AutocompleteMenu'
+import {ItemProps} from '../deprecated/ActionList'
+import {MandateProps} from '../utils/types'
+
+const mockItems = [
+  {text: 'zero', id: 0},
+  {text: 'one', id: 1},
+  {text: 'two', id: 2},
+  {text: 'three', id: 3},
+  {text: 'four', id: 4},
+  {text: 'five', id: 5},
+  {text: 'six', id: 6},
+  {text: 'seven', id: 7},
+  {text: 'twenty', id: 20},
+  {text: 'twentyone', id: 21},
+]
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type AutocompleteItemProps<T = Record<string, any>> = MandateProps<ItemProps, 'id'> & {metadata?: T}
+
+const LabelledAutocomplete = <T extends AutocompleteItemProps>({
+  inputProps = {},
+  menuProps,
+}: {
+  inputProps?: AutocompleteInputProps
+  menuProps: AutocompleteMenuInternalProps<T>
+}) => {
+  const {['aria-labelledby']: ariaLabelledBy = 'autocompleteLabel', ...menuPropsRest} = menuProps
+  const {id = 'autocompleteInput', ...inputPropsRest} = inputProps
+  return (
+    <ThemeProvider theme={theme}>
+      <SSRProvider>
+        <BaseStyles>
+          {/* eslint-disable-next-line jsx-a11y/label-has-for */}
+          <label htmlFor={id} id={ariaLabelledBy}>
+            Autocomplete field
+          </label>
+          <Autocomplete id="autocompleteId">
+            <Autocomplete.Input id={id} {...inputPropsRest} />
+            <Autocomplete.Overlay>
+              <Autocomplete.Menu aria-labelledby={ariaLabelledBy} {...menuPropsRest} />
+            </Autocomplete.Overlay>
+          </Autocomplete>
+        </BaseStyles>
+      </SSRProvider>
+    </ThemeProvider>
+  )
+}
 
 export default {
   title: 'Components/Dialog',
@@ -60,6 +108,7 @@ export default {
 
 const lipsum = (
   <div style={{fontSize: '14px'}}>
+    <LabelledAutocomplete menuProps={{items: mockItems, selectedItemIds: []}} />
     <p style={{marginBlockStart: 0}}>
       Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque sollicitudin mauris maximus elit sagittis, nec
       lobortis ligula elementum. Nam iaculis, urna nec lobortis posuere, eros urna venenatis eros, vel accumsan turpis
@@ -100,6 +149,7 @@ const lipsum = (
     </p>
   </div>
 )
+
 interface DialogStoryProps {
   width: DialogWidth
   height: DialogHeight

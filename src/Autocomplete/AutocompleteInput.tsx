@@ -87,6 +87,7 @@ const AutocompleteInput = React.forwardRef(
         }
 
         if (event.key === 'Escape' && inputRef.current?.value) {
+          console.log('autocomplete esc')
           setInputValue('')
           inputRef.current.value = ''
         }
