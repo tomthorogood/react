@@ -1,14 +1,16 @@
 import React, {useState, useRef} from 'react'
-import {Dialog, Box, Text} from '..'
+import {Dialog, Box, Text, Autocomplete} from '..'
 import {Button} from '../deprecated'
 import {render as HTMLRender, fireEvent} from '@testing-library/react'
 import {axe, toHaveNoViolations} from 'jest-axe'
 import {behavesAsComponent, checkExports} from '../utils/testing'
+import userEvent from '@testing-library/user-event'
 expect.extend(toHaveNoViolations)
 
 const comp = (
   <Dialog isOpen onDismiss={() => null} aria-labelledby="header">
     <Dialog.Header id="header">Title</Dialog.Header>
+
     <Box p={3}>
       <Text fontFamily="sans-serif">Some content</Text>
     </Box>
@@ -48,6 +50,7 @@ const ClosedDialog = () => {
         <Box p={3}>
           <Text fontFamily="sans-serif">Some content</Text>
         </Box>
+        <Autocomplete />
       </div>
     </Dialog>
   )
@@ -99,6 +102,16 @@ describe('Dialog', () => {
 
     expect(getByTestId('inner')).toBeTruthy()
     fireEvent.click(getByLabelText('Close'))
+
+    expect(queryByTestId('inner')).toBeNull()
+  })
+
+  it('Toggles when you press escape key', async () => {
+    const {getByTestId, queryByTestId, container} = HTMLRender(<Component />)
+    const user = userEvent.setup()
+
+    expect(getByTestId('inner')).toBeTruthy()
+    await user.keyboard('{escape}')
 
     expect(queryByTestId('inner')).toBeNull()
   })
