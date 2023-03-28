@@ -33,8 +33,7 @@ export const useOverlay = ({
   // We only want one overlay to close at a time
   const preventeddefaultCheckedEscape: UseOverlaySettings['onEscape'] = event => {
     onEscape(event)
-    //escaped out to let the esc action "bubble up", behaving like a stopPropogation
-    // event.preventDefault()
+    event.preventDefault()
   }
   useOnEscapePress(preventeddefaultCheckedEscape)
   return {ref: overlayRef}

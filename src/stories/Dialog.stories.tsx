@@ -39,7 +39,7 @@ const LabelledAutocomplete = <T extends AutocompleteItemProps>({
         <BaseStyles>
           {/* eslint-disable-next-line jsx-a11y/label-has-for */}
           <label htmlFor={id} id={ariaLabelledBy}>
-            Autocomplete field
+            Autocomplete field{' '}
           </label>
           <Autocomplete id="autocompleteId">
             <Autocomplete.Input id={id} {...inputPropsRest} />
@@ -108,7 +108,6 @@ export default {
 
 const lipsum = (
   <div style={{fontSize: '14px'}}>
-    <LabelledAutocomplete menuProps={{items: mockItems, selectedItemIds: []}} />
     <p style={{marginBlockStart: 0}}>
       Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque sollicitudin mauris maximus elit sagittis, nec
       lobortis ligula elementum. Nam iaculis, urna nec lobortis posuere, eros urna venenatis eros, vel accumsan turpis
@@ -147,6 +146,7 @@ const lipsum = (
       pharetra dolor at dictum tempor. Quisque ut est a ligula hendrerit sodales. Curabitur ornare a nulla in laoreet.
       Maecenas semper mi egestas, dignissim nisi et, elementum neque.
     </p>
+    <LabelledAutocomplete menuProps={{items: mockItems, selectedItemIds: []}} />
   </div>
 )
 
