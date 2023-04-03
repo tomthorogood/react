@@ -1,10 +1,12 @@
 import React, {useState, useRef} from 'react'
 import {Dialog, Box, Text, Autocomplete} from '..'
 import {Button} from '../deprecated'
-import {render as HTMLRender, fireEvent} from '@testing-library/react'
+import {render as HTMLRender, fireEvent, prettyDOM} from '@testing-library/react'
 import {axe, toHaveNoViolations} from 'jest-axe'
 import {behavesAsComponent, checkExports} from '../utils/testing'
 import userEvent from '@testing-library/user-event'
+import {AUTOCOMPLETE_LABEL, LabelledAutocomplete, mockItems} from './helpers/LabelledAutocomplete'
+
 expect.extend(toHaveNoViolations)
 
 const comp = (
@@ -36,6 +38,7 @@ const Component = () => {
           <Box p={3}>
             <Text fontFamily="sans-serif">Some content</Text>
           </Box>
+          <LabelledAutocomplete menuProps={{items: mockItems, selectedItemIds: []}} />
         </div>
       </Dialog>
     </div>
@@ -50,7 +53,6 @@ const ClosedDialog = () => {
         <Box p={3}>
           <Text fontFamily="sans-serif">Some content</Text>
         </Box>
-        <Autocomplete />
       </div>
     </Dialog>
   )
@@ -107,12 +109,19 @@ describe('Dialog', () => {
   })
 
   it('Toggles when you press escape key', async () => {
-    const {getByTestId, queryByTestId, container} = HTMLRender(<Component />)
+    const {getByTestId, queryByTestId, container, getByLabelText} = HTMLRender(<Component />)
     const user = userEvent.setup()
+    const inputNode = getByLabelText(AUTOCOMPLETE_LABEL)
 
     expect(getByTestId('inner')).toBeTruthy()
-    await user.keyboard('{escape}')
+    expect(inputNode.getAttribute('aria-expanded')).not.toBe('true')
+    fireEvent.click(inputNode)
 
+    expect(inputNode.getAttribute('aria-expanded')).toBe('true')
+    expect(inputNode).toHaveFocus()
+    fireEvent.keyDown(container, {key: 'Escape', code: 'Escape'})
+    expect(queryByTestId('inner')).not.toBeNull()
+    await user.keyboard('{escape}')
     expect(queryByTestId('inner')).toBeNull()
   })
 
