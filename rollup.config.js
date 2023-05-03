@@ -113,7 +113,7 @@ const baseConfig = {
       extensions,
     }),
     postcss({
-      extract: 'components.css',
+      extract: 'css/components.css',
       autoModules: false,
       modules: {generateScopedName: 'prc_[local]-[hash:base64:5]'},
     }),
@@ -127,7 +127,8 @@ export default [
     external: dependencies.map(createPackageRegex),
     output: {
       interop: 'auto',
-      dir: 'lib-esm',
+      dir: '.',
+      entryFileNames: 'lib-esm/[name].js',
       format: 'esm',
       preserveModules: true,
       preserveModulesRoot: 'src',
@@ -140,7 +141,8 @@ export default [
     external: dependencies.filter(name => !ESM_ONLY.has(name)).map(createPackageRegex),
     output: {
       interop: 'auto',
-      dir: 'lib',
+      dir: '.',
+      entryFileNames: 'lib/[name].js',
       format: 'commonjs',
       preserveModules: true,
       preserveModulesRoot: 'src',
