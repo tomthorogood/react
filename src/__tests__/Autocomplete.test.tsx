@@ -1,10 +1,15 @@
 import {render as HTMLRender, fireEvent, waitFor} from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import React from 'react'
-import Autocomplete from '../Autocomplete'
+import Autocomplete, {AutocompleteInputProps} from '../Autocomplete'
+import {AutocompleteMenuInternalProps} from '../Autocomplete/AutocompleteMenu'
+import BaseStyles from '../BaseStyles'
+
+import {ItemProps} from '../deprecated/ActionList'
 
 import {SSRProvider} from '../utils/ssr'
 import {render} from '../utils/testing'
+import {MandateProps} from '../utils/types'
 import {LabelledAutocomplete, mockItems, AUTOCOMPLETE_LABEL} from './helpers/LabelledAutocomplete'
 
 describe('Autocomplete', () => {
@@ -249,6 +254,7 @@ describe('Autocomplete', () => {
 
     it('calls handleAddItem with new item data when passing addNewItem', () => {
       const handleAddItemMock = jest.fn()
+
       const {getByText} = HTMLRender(
         <LabelledAutocomplete
           menuProps={{

@@ -60,7 +60,7 @@ function AutocompleteOverlay({
       ref={floatingElementRef as React.RefObject<HTMLDivElement>}
       top={position?.top}
       left={position?.left}
-      visibility={'visible'}
+      visibility={showMenu ? 'visible' : 'hidden'}
       sx={{
         overflow: 'auto',
       }}

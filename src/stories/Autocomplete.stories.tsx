@@ -8,6 +8,7 @@ import {AnchoredOverlay} from '../AnchoredOverlay'
 import FormControl from '../FormControl'
 import {Button} from '../Button'
 import {ComponentProps} from '../utils/types'
+import {LabelledAutocomplete, mockItems} from './'
 import {
   FormControlArgs,
   formControlArgs,
@@ -430,6 +431,17 @@ export const AddNewItem = (args: FormControlArgs<AutocompleteArgs>) => {
           <FormControl.Validation {...validationArgs} variant={validationArgs.variant} />
         )}
       </FormControl>
+      <LabelledAutocomplete
+        menuProps={{
+          items: mockItems,
+          selectedItemIds: [],
+          selectionVariant: 'multiple',
+          addNewItem: {
+            text: 'Add new item',
+            handleAddItem: () => null,
+          },
+        }}
+      />
     </Box>
   )
 }
