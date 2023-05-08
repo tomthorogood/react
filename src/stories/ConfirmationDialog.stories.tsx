@@ -1,6 +1,6 @@
 import React, {useState, useRef, useCallback} from 'react'
 import {Meta} from '@storybook/react'
-import {BaseStyles, Box, ThemeProvider, useTheme} from '..'
+import {BaseStyles, Box, Overlay, OverlayProps, ThemeProvider, useTheme} from '..'
 import {Button} from '../Button'
 import {ActionMenu} from '../ActionMenu'
 import {ActionList} from '../ActionList'
@@ -39,12 +39,53 @@ export const BasicConfirmationDialog = () => {
           onClose={onDialogClose}
           confirmButtonContent="Delete it!"
           confirmButtonType="danger"
+          onOutsideClick={async () => {
+            await confirm({title: 'Are you sure?', content: 'Do you really want to turn this button green?'})
+          }}
         >
           Deleting the universe could have disastrous effects, including but not limited to destroying all life on
           Earth.
         </ConfirmationDialog>
       )}
     </>
+  )
+}
+export const ConfirmationOverlay = ({anchorSide}: OverlayProps) => {
+  const [isOpen, setIsOpen] = useState(false)
+  const buttonRef = useRef<HTMLButtonElement>(null)
+  const confirmButtonRef = useRef<HTMLButtonElement>(null)
+  const anchorRef = useRef<HTMLDivElement>(null)
+  const confirm = useConfirm()
+  const closeOverlay = () => setIsOpen(false)
+  return (
+    <Box ref={anchorRef}>
+      <Button ref={buttonRef} onClick={() => setIsOpen(!isOpen)}>
+        open overlay
+      </Button>
+      {isOpen ? (
+        <Overlay
+          initialFocusRef={confirmButtonRef}
+          returnFocusRef={buttonRef}
+          ignoreClickRefs={[buttonRef]}
+          onEscape={closeOverlay}
+          onClickOutside={async () => {
+            await confirm({title: 'Are you sure?', content: 'Do you really want to turn this button green?'})
+          }}
+          width="small"
+          anchorSide={anchorSide}
+        >
+          <Box display="flex" flexDirection="column" p={2}>
+            Are you sure? **
+            <Button variant="danger" onClick={closeOverlay}>
+              Cancel
+            </Button>
+            <Button onClick={closeOverlay} ref={confirmButtonRef}>
+              Confirm
+            </Button>
+          </Box>
+        </Overlay>
+      ) : null}
+    </Box>
   )
 }
 

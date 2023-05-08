@@ -1,9 +1,11 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable no-console */
 import React, {useCallback, useEffect, useRef, useState} from 'react'
 import styled from 'styled-components'
 import Button, {ButtonPrimary, ButtonDanger, ButtonProps} from '../deprecated/Button'
 import Box from '../Box'
 import {get} from '../constants'
-import {useOnEscapePress, useProvidedRefOrCreate} from '../hooks'
+import {TouchOrMouseEvent, useOnEscapePress, useProvidedRefOrCreate} from '../hooks'
 import {useFocusTrap} from '../hooks/useFocusTrap'
 import sx, {SxProp} from '../sx'
 import StyledOcticon from '../StyledOcticon'
@@ -13,6 +15,8 @@ import {FocusKeys} from '@primer/behaviors'
 import Portal from '../Portal'
 import {useRefObjectAsForwardedRef} from '../hooks/useRefObjectAsForwardedRef'
 import {useId} from '../hooks/useId'
+import Overlay from '../Overlay'
+import {noop} from 'lodash'
 
 const ANIMATION_DURATION = '200ms'
 
@@ -99,6 +103,8 @@ export interface DialogProps extends SxProp {
    * (either 'close-button' or 'escape').
    */
   onClose: (gesture: 'close-button' | 'escape') => void
+
+  onOutsideClick?: (e: TouchOrMouseEvent) => void
 
   /**
    * Default: "dialog". The ARIA role to assign to this dialog.
@@ -258,6 +264,7 @@ const _Dialog = React.forwardRef<HTMLDivElement, React.PropsWithChildren<DialogP
     renderBody,
     renderFooter,
     onClose,
+    onOutsideClick = noop,
     role = 'dialog',
     width = 'xlarge',
     height = 'auto',
@@ -277,7 +284,6 @@ const _Dialog = React.forwardRef<HTMLDivElement, React.PropsWithChildren<DialogP
   const dialogRef = useRef<HTMLDivElement>(null)
   useRefObjectAsForwardedRef(forwardedRef, dialogRef)
   const backdropRef = useRef<HTMLDivElement>(null)
-  useFocusTrap({containerRef: dialogRef, restoreFocusOnCleanUp: true, initialFocusRef: autoFocusedFooterButtonRef})
 
   useOnEscapePress(
     (event: KeyboardEvent) => {
@@ -287,31 +293,44 @@ const _Dialog = React.forwardRef<HTMLDivElement, React.PropsWithChildren<DialogP
     [onClose],
   )
 
+  useEffect(() => {
+    console.log(autoFocusedFooterButtonRef.current || 'no autoFocusedFooterButtonRef')
+    console.log(dialogRef.current || 'no dialogRef')
+    console.log(backdropRef.current || 'no backdropRef')
+    console.log(forwardedRef || 'no forwardedRef')
+  }, [forwardedRef])
+
   const header = (renderHeader ?? DefaultHeader)(defaultedProps)
   const body = (renderBody ?? DefaultBody)(defaultedProps)
   const footer = (renderFooter ?? DefaultFooter)(defaultedProps)
 
   return (
-    <>
-      <Portal>
-        <Backdrop ref={backdropRef}>
-          <StyledDialog
-            width={width}
-            height={height}
-            ref={dialogRef}
-            role={role}
-            aria-labelledby={dialogLabelId}
-            aria-describedby={dialogDescriptionId}
-            aria-modal
-            sx={sx}
-          >
-            {header}
-            {body}
-            {footer}
-          </StyledDialog>
-        </Backdrop>
-      </Portal>
-    </>
+    <Overlay
+      width={width}
+      returnFocusRef={autoFocusedFooterButtonRef}
+      onEscape={(event: KeyboardEvent) => {
+        onClose('escape')
+        event.preventDefault()
+      }}
+      onClickOutside={onOutsideClick}
+    >
+      <Backdrop ref={backdropRef}>
+        <StyledDialog
+          width={width}
+          height={height}
+          ref={dialogRef}
+          role={role}
+          aria-labelledby={dialogLabelId}
+          aria-describedby={dialogDescriptionId}
+          aria-modal
+          sx={sx}
+        >
+          {header}
+          {body}
+          {footer}
+        </StyledDialog>
+      </Backdrop>
+    </Overlay>
   )
 })
 _Dialog.displayName = 'Dialog'

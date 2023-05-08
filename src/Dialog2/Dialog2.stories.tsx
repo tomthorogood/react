@@ -26,21 +26,23 @@ export default {
 } as Meta
 
 export const Default = () => {
-  const [isOpen, setIsOpen] = useState(false)
-  const buttonRef = useRef<HTMLButtonElement>(null)
-  const onDialogClose = useCallback(() => setIsOpen(false), [])
+  // const [isOpen, setIsOpen] = useState(false)
+  // const buttonRef = useRef<HTMLButtonElement>(null)
+  // const onDialogClose = useCallback(() => setIsOpen(false), [])
 
   return (
-    <>
-      <Button ref={buttonRef} onClick={() => setIsOpen(!isOpen)}>
-        Show dialog
-      </Button>
-      {isOpen && (
-        <Dialog onClose={onDialogClose}>
-          Dialog Content <BasicConfirmationDialog />
-          {/* Dialog Content <BasicDialog width="medium" height="auto" subtitle={false}></BasicDialog> */}
-        </Dialog>
-      )}
-    </>
+    <> </>
+
+    // <>
+    //   <Button ref={buttonRef} onClick={() => setIsOpen(!isOpen)}>
+    //     Show dialog
+    //   </Button>
+    //   {isOpen && (
+    //     <Dialog onClose={onDialogClose}>
+    //       Dialog Content <BasicConfirmationDialog />
+    //       {/* Dialog Content <BasicDialog width="medium" height="auto" subtitle={false}></BasicDialog> */}
+    //     </Dialog>
+    //   )}
+    // </>
   )
 }
