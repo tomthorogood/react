@@ -43,11 +43,10 @@ const renderFn = ({
   sx,
   text,
   trailingVisual,
-  hideSelection,
   onSelect,
 }: ItemInput): React.ReactElement => {
   return (
-    <ActionList.Item key={id} sx={sx} role="option" onSelect={onSelect} hideSelection={hideSelection}>
+    <ActionList.Item key={id} sx={sx} role="option" onSelect={onSelect}>
       {text ? text : null}
       {description ? (
         <ActionList.Description variant="block">
@@ -99,7 +98,6 @@ export const SavedRepliesButton = () => {
           },
         },
         id: i.toString(),
-        hideSelection: true,
       }),
     )
 
@@ -140,6 +138,12 @@ export const SavedRepliesButton = () => {
         onSelectItem(Array.isArray(selection) ? selection[0] : selection)
       }}
       overlayProps={{width: 'small', maxHeight: 'small', anchorSide: 'outside-right', onKeyDown}}
+      // @ts-ignore this is bad because SelectPanel does not accept selectionVariant in the public API
+      // but it does pass it down to FilteredActionList underneath.
+      // SavedReplies should not use SelectPanel and override it's semantics, it should instead
+      // use the building blocks of SelectPanel to build a new component
+      selectionVariant={undefined}
+      aria-multiselectable={undefined}
     />
   ) : (
     <></>
